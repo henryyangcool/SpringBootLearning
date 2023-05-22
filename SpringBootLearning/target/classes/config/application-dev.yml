@@ -1,0 +1,211 @@
+server:
+  port: 8082
+#   context-path: /api
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+#        http-only: true
+#        secure: true
+
+logging:
+  file:
+    name: ./log/app.log
+  level:
+#    root: error
+    com.develop: info
+    console: info
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+  pattern:
+    file: "%d{YYYY/MM/dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+    console: "%d{YYYY/MM/dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+
+spring:
+  # 設定資料庫
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/profile?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 1111
+  jpa:
+    hibernate:
+      ddl-auto: update
+      # create:每次啟動重新創建Table
+      # update:如果沒有Table則啟動時建立 有則更新Table
+      # create:每次啟動時創建Table 結束就刪除
+    show-sql: true
+    # 會輸出sql語句
+  # 設定Email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: henryyangcool@gmail.com
+    password: ozpbbrfljtmaftkd
+    properties:
+      mail:
+        smtp:
+          starttls.enable: true
+          auth: true
+          ssl.trust: smtp.gmail.com
+#  ldap:
+#    urls: ldap://localhost:389/
+#    username: Manager
+#    password: secret
+#    base: dc=FET,dc=com
+#        https://blog.csdn.net/Jarrrrr/article/details/99681405
+
+keycloak-api:
+  token:
+    client-id: bms_backend
+keycloak:
+  realm: BMS
+  auth-server-url: http://localhost:8080/auth
+  resource: bms_frontend
+  ssl-required: NONE
+  credentials:
+    secret: Q2wwrPlT1oGCAVy0COLrbU1Pp9AFje0H
+  bearer-only: true
+  use-resource-role-mappings: false
+  cors: true
+  security-constraints:
+    - authRoles:
+        - BMS_CLIENT_VIEWER
+      securityCollections:
+        - name: bms_client_viewer
+          methods:
+            - GET
+          patterns:
+            - /bms/v1/auth/project/list
+            - /bms/v1/auth/device/*
+            - /bms/v1/auth/telemetry/*
+            - /bms/v1/auth/admin/version
+        - name: bms_client_viewer_manager_role
+          methods:
+            - POST
+          patterns:
+            - /bms/v1/auth/user/update-secret-email
+    - authRoles:
+        - BMS_USER
+      securityCollections:
+        - name: bms_user_get
+          methods:
+            - GET
+          patterns:
+            - /bms/v1/auth/setting/*
+            - /bms/v1/auth/project/list
+            - /bms/v1/auth/project/user/list
+            - /bms/v1/auth/device/list
+            - /bms/v1/auth/telemetry/*
+            - /bms/v1/auth/user/*
+            - /bms/v1/auth/admin/version
+            - /bms/v1/auth/notify/*
+            - /bms/v1/auth/event/*
+            - /bms/v1/auth/intersection/list
+            - /bms/v1/auth/intersection/battery/level
+        - name: bms_user_put
+          methods:
+            - PUT
+          patterns:
+            - /bms/v1/auth/user/project/default
+        - name: bms_user_post
+          methods:
+            - POST
+          patterns:
+            - /bms/v1/auth/user/update-secret-email
+    - authRoles:
+        - BMS_ENGINEER
+      securityCollections:
+        - name: bms_engineer_get
+          methods:
+            - GET
+          patterns:
+            - /bms/v1/auth/setting/*
+            - /bms/v1/auth/project/list
+            - /bms/v1/auth/project/user/list
+            - /bms/v1/auth/device/list
+            - /bms/v1/auth/device/install/*
+            - /bms/v1/auth/telemetry/*
+            - /bms/v1/auth/user/*
+            - /bms/v1/auth/admin/version
+            - /bms/v1/auth/notify/*
+            - /bms/v1/auth/event/*
+            - /bms/v1/auth/intersection/list
+            - /bms/v1/auth/intersection/battery/level
+        - name: bms_engineer_put
+          methods:
+            - PUT
+          patterns:
+            - /bms/v1/auth/user/project/default
+            - /bms/v1/auth/device/install/*
+        - name: bms_engineer_post
+          methods:
+            - POST
+          patterns:
+            - /bms/v1/auth/device/install/*
+            - /bms/v1/auth/user/update-secret-email
+    - authRoles:
+        - BMS_PROJECT_ADMIN
+      securityCollections:
+        - name: bms_project_admin
+          patterns:
+            - /bms/v1/auth/setting/*
+            - /bms/v1/auth/project/list
+            - /bms/v1/auth/project/user/list
+            - /bms/v1/auth/device/*
+            - /bms/v1/auth/device/install/*
+            - /bms/v1/auth/device/list
+            - /bms/v1/auth/telemetry/*
+            - /bms/v1/auth/user/*
+            - /bms/v1/auth/user/project/default
+            - /bms/v1/auth/user/update-secret-email
+            - /bms/v1/auth/admin/version
+            - /bms/v1/auth/notify/*
+            - /bms/v1/auth/event/*
+            - /bms/v1/auth/intersection/*
+            - /bms/v1/auth/intersection/list
+            - /bms/v1/auth/intersection/battery/level
+    - authRoles:
+        - BMS_SYSTEM_ADMIN
+      securityCollections:
+        - name: bms_system_admin
+          patterns:
+            - /bms/v1/auth/*
+            - /bms/v1/auth/admin/*
+            - /bms/v1/auth/setting/*
+            - /bms/v1/auth/project/*
+            - /bms/v1/auth/project/user/list
+            - /bms/v1/auth/project/list
+            - /bms/v1/auth/client/*
+            - /bms/v1/auth/device/*
+            - /bms/v1/auth/device/install/*
+            - /bms/v1/auth/device/list
+            - /bms/v1/auth/telemetry/*
+            - /bms/v1/auth/user/*
+            - /bms/v1/auth/user/project/default
+            - /bms/v1/auth/user/update-secret-email
+            - /bms/v1/auth/admin/version
+            - /bms/v1/auth/notify/*
+            - /bms/v1/auth/event/*
+            - /bms/v1/auth/intersection/*
+            - /bms/v1/auth/intersection/list
+            - /bms/v1/auth/intersection/battery/level
+
+#Google
+secret: HenryIsLearningGoogleAuthentication
+googleQrcodeFormat: https://www.google.com/chart?chs=200x200&cht=qr&chl=%s
+otpType: totp
+account: henryyang1@fareastone.com.tw
+issuer: AAA
+format: otpauth://%s/%s?secret=%s&issuer=%s
+mailUsername: henryyangcool@gmail.com
+#whitelist: /swagger-resources/**,/swagger-ui/**,/auth/**,/v2/**
+
+
+
+

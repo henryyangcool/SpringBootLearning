@@ -1,0 +1,10 @@
+# 使用哪個yml(環境配置)
+spring:
+  profiles:
+    active: dev
+  thymeleaf:
+    mode: HTML
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

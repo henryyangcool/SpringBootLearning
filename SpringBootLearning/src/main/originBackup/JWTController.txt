@@ -1,0 +1,79 @@
+package com.develop.Controller;
+
+import com.develop.Service.JWT.AuthRequest;
+import com.develop.Service.JWT.JWTTokenService;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.security.auth.message.AuthException;
+import jakarta.validation.Valid;
+import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+//import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+@Tag(name = "Token")
+// @Controller
+@RestController
+// 會回傳JSON格式
+@RequestMapping("/api/token")
+//@SecurityRequirement(name = "bearerAuth")
+public class JWTController {
+
+    @Autowired
+    private JWTTokenService jwtTokenService;
+
+    //    變數帶在body
+    @PostMapping("/login")
+    public Response issueToken(@Valid @RequestBody AuthRequest request) {
+
+        String token = jwtTokenService.generateToken(request);
+
+        return new Response(token);
+    }
+
+    //    變數帶在body
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> issueToken(@Valid @RequestBody AuthRequest request) {
+//        String token = jwtTokenService.generateToken(request);
+//        Map<String, String> response = Collections.singletonMap("token", token);
+//
+//        return ResponseEntity.ok(response);
+//    }
+//
+//    @PostMapping("/parse")
+//    public ResponseEntity<Map<String, Object>> parseToken(@RequestBody Map<String, String> request) {
+//        String token = request.get("token");
+//        Map<String, Object> response = jwtTokenService.parseToken(token);
+//
+//        return ResponseEntity.ok(response);
+//    }
+
+//    變數帶在Header
+//    @PostMapping("/login")
+//    public ResponseEntity login(@RequestParam String username,
+//                                @RequestParam int password) {
+//        JWTTokenService jwtTokenService = new JWTTokenService();
+//        String token = jwtTokenService.generateToken(username, password);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(token);
+//    }
+
+//    @PostMapping("/parse")
+//    public String parseToken(@RequestBody String token) {
+//        JWTTokenService jwtTokenService = new JWTTokenService();
+//
+//        if(jwtTokenService.validateToken(token)){
+//            return "ok";
+//        }else {
+//            return "not ok";
+//        }
+//    }
+}

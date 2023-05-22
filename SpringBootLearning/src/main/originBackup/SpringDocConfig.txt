@@ -1,0 +1,52 @@
+package com.develop.Controller;
+
+import com.develop.Service.JWT.AuthRequest;
+import com.develop.Service.JWT.JWTTokenService;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.security.auth.message.AuthException;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+//import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+@Tag(name = "取Token")
+// @Controller
+@RestController
+// 會回傳JSON格式
+@RequestMapping("/api")
+public class JWTController {
+
+//    @PostMapping("/login")
+//    public ResponseEntity login(@RequestParam String username){
+//        JWTTokenService jwtTokenService = new JWTTokenService();
+//        String token = jwtTokenService.generateToken(username); // 取得token
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(token);
+//    }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestParam String username,
+                                @RequestParam int password) {
+        JWTTokenService jwtTokenService = new JWTTokenService();
+        String token = jwtTokenService.generateToken(username, password);
+
+        return ResponseEntity.status(HttpStatus.OK).body(token);
+    }
+    @PostMapping("/parse")
+    public String parseToken(@RequestBody String token) {
+        JWTTokenService jwtTokenService = new JWTTokenService();
+
+        if(jwtTokenService.validateToken(token)){
+            return "ok";
+        }else {
+            return "not ok";
+        }
+    }
+}

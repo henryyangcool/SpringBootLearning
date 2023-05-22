@@ -1,0 +1,97 @@
+package com.develop.Service.JWT;
+
+import com.develop.Service.JWT.AuthRequest;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import jakarta.security.auth.message.AuthException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.security.Key;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Service
+public class JWTTokenService implements Serializable {
+    private static final long EXPIRATION_TIME = 1 * 60 * 1000;
+    /**
+     * JWT SECRET KEY
+     */
+    private static final String SECRET = "YeeIsLearningSpringBoot";
+
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
+
+    public String generateToken(String username, int password) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("password", password);
+//        claims.put("password", password);
+
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+        JwtBuilder builder = Jwts.builder()
+                .setClaims( claims )
+                .setExpiration( new Date( Instant.now().toEpochMilli() + EXPIRATION_TIME  ))
+                .signWith(key);
+
+        return builder.compact();
+    }
+//    public String generateToken(AuthRequest request) {
+//        Authentication authentication =
+//                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+//        authentication = authenticationManager.authenticate(authentication);
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.add(Calendar.MINUTE, 2);
+//
+//        Claims claims = Jwts.claims();
+//        claims.put("username", userDetails.getUsername());
+//        claims.setExpiration(calendar.getTime());
+//        claims.setIssuer("Programming Classroom");
+//
+//        Key secretKey = Keys.hmacShaKeyFor(SECRET.getBytes());
+//
+//        return Jwts.builder()
+//                .setClaims(claims)
+//                .signWith(secretKey)
+//                .compact();
+//    }
+
+//    public Map<String, Object> parseToken(String token) {
+//        Key secretKey = Keys.hmacShaKeyFor(SECRET.getBytes());
+//
+//        JwtParser parser = Jwts.parserBuilder()
+//                .setSigningKey(secretKey)
+//                .build();
+//
+//        Claims claims = parser
+//                .parseClaimsJws(token)
+//                .getBody();
+//
+//        return claims.entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//    }
+
+    /**
+     * 驗證JWT
+     */
+    public boolean validateToken(String token){
+        if(token == null){
+            return false;
+        }
+        try {
+            Jwts.parserBuilder().setSigningKey(SECRET).build().parseClaimsJws(token);
+        }catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+}
+

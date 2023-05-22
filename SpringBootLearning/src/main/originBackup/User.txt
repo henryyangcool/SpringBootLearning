@@ -1,0 +1,18 @@
+package com.develop.Service.JWT;
+
+import com.develop.Service.JWT.AuthRequest;
+import com.develop.Entity.Role;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+public class User implements UserDetailsService {
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
+    }
+    public int addUser(AuthRequest auth) {
+        auth.setPassword(1111);
+        return 1111;
+    }
+}

@@ -1,0 +1,87 @@
+package com.develop.Security;
+
+//import com.develop.Service.JWT.JWTAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig{
+//    @Autowired
+//    private JWTAuthenticationFilter jwtAuthenticationfilter;
+
+//    密碼加密方式
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
+//    控制角色能使用的功能
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+                .authorizeHttpRequests()
+                    .requestMatchers("/**").permitAll()
+//                    .requestMatchers("/**").permitAll()
+//                    任何請求都要登入
+                    .anyRequest().authenticated()
+                    .and()
+//                .addFilterBefore(jwtAuthenticationfilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(jwtAuthenticationfilter, BasicAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .formLogin()
+//                    .loginProcessingUrl("/addUser")
+//                    .loginPage("/login")
+//                    .defaultSuccessUrl("/index")
+                    .and()
+                .csrf()
+                    .disable();
+
+        return http.build();
+    }
+
+//    增加使用者訊息
+    @Bean
+    public UserDetailsService userDetailsService() {
+
+        UserDetails u1 = User.withUsername("admin")
+//                .password("$2a$10$UVOyYuvI0BmPFMEDeg7cPOM4E.2.QEMNFerEl/95YzzyzVmAr6SCK")
+//                {noop}密碼不編碼
+                .password("{noop}1111")
+                .roles("admin")
+                .build();
+//        UserDetails u2 = User.withUsername("guest")
+////                .password("$2a$10$UVOyYuvI0BmPFMEDeg7cPOM4E.2.QEMNFerEl/95YzzyzVmAr6SCK")
+//                .password("{noop}2222")
+//                .roles("admin")
+//                .build();
+
+        return new InMemoryUserDetailsManager(u1);
+    }
+
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
+}
+
+
+
+
+

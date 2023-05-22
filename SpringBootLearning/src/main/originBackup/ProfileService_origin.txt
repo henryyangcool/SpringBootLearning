@@ -1,0 +1,76 @@
+package com.develop.originBackup;
+
+import com.develop.Entity.Profile;
+import com.develop.Repository.ProfileRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+//import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service    
+public class ProfileService_origin {
+
+    // 讓ProfileService.java可以使用ProfileRepository而不用實例化
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    // 回傳資料庫內所有資料
+    public List<Profile> findAll(){
+        System.out.println(profileRepository.findAll());
+        return profileRepository.findAll();
+    }
+
+    // 新增一筆個人資料
+    public Profile save(Profile p){
+        return profileRepository.save(p);
+    }
+
+    // 取得特定id資料
+    public Profile findOne(long id){
+        return profileRepository.findById(id).get();
+        // return profileRepository.findOne(id);
+    }
+
+    // 刪除特定id資料
+    public void delete(long id){
+        profileRepository.deleteById(id);
+        // profileRepository.delete(id);
+    }
+
+    // 條件式搜尋
+    public List<Profile> findByJob(String job){
+        return profileRepository.findByJob(job);
+    }
+
+    public List<Profile> findByJobAndStatus(String job, int status){
+        return profileRepository.findByJobAndStatus(job, status);
+    }
+
+    public List<Profile> findByDescriptionEndsWith(String description){
+        return profileRepository.findByDescriptionEndsWith(description);
+    }
+
+    public List<Profile> findByDescriptionContains(String description){
+        return profileRepository.findByDescriptionContains(description);
+    }
+
+    // 自定義搜尋
+    public List<Profile> findByJPQL(int len){
+        return profileRepository.findJPQL(len);
+    }
+
+    // 用在需要更動資料庫內的數據，如果發生異常可以倒回原本資料
+    @Transactional
+    // 自定義更新
+    public int updateByJPQL(int status, long id){
+        return profileRepository.updateByJPQL(status, id);
+    }
+
+    @Transactional 
+    // 自定義刪除
+    public int deleteByJPQL(long id){
+        return profileRepository.deleteByJPQL(id);
+    }
+}
